@@ -32,6 +32,8 @@ class Aoe_Static_Model_Config extends Mage_Core_Model_Config_Base {
 
     protected $markers = NULL;
 
+    protected $_blockCacheClasses = NULL;
+
     /**
      * Class constructor
      * load cache configuration
@@ -98,5 +100,31 @@ class Aoe_Static_Model_Config extends Mage_Core_Model_Config_Base {
             $callback = (string)$configuration->$markerWithoutHash->valueCallback;
         }
         return $callback;
+    }
+
+    /**
+     * Check whether or not to capture block cache tags
+     * @return boolean
+     */
+    public function blockCacheTagsEnabled()
+    {
+        return  !(boolean)$this->getNode('aoe_static/default/block_cache_tags/disabled')->__toString();
+    }
+
+    /**
+     * Get list of block classes for which to capture cache tags and send in response
+     * @return array
+     */
+    public function getBlockCacheClasses()
+    {
+        if ($this->_blockCacheClasses === null) {
+            $blockClasses = $this->getNode('aoe_static/default/block_cache_tags/classes')->asArray();
+            if (is_array($blockClasses)) {
+                $this->_blockCacheClasses = array_keys($blockClasses);
+            } else {
+                $this->_blockCacheClasses = array();
+            }
+        }
+        return $this->_blockCacheClasses;
     }
 }

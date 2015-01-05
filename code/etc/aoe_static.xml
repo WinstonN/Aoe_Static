@@ -48,6 +48,13 @@
                 </MARKERNAMEWITHOUTHASHES>
                 -->
             </markers>
+            <block_cache_tags>
+                <disabled>0</disabled>
+                <classes>
+                    <Mage_Catalog_Block_Product_List/>
+                    <Mage_Catalog_Block_Category_View/>
+                </classes>
+            </block_cache_tags>
         </default>
 
 		<!-- This will be applied if none of the the fullaction name is not found or disabled in the following configurations -->

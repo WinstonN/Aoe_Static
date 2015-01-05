@@ -27,6 +27,12 @@ class Aoe_Static_Model_Observer
     protected $messagesToShow = false;
 
     /**
+     * List of cache tags to send based on Magento block cache tags 
+     * @var array
+     */
+    private $_blockCacheTags = array();
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -91,6 +97,7 @@ class Aoe_Static_Model_Observer
 
         $this->_applyRegistryMaxAge($response);
         $this->_applyCustomMaxAgeFromDb($controllerAction->getRequest(), $response);
+        $this->_applBlockCacheTags($response);
 
         return $this;
     }
@@ -202,6 +209,37 @@ class Aoe_Static_Model_Observer
         $handle = $conf ? 'aoestatic_cacheable' : 'aoestatic_notcacheable';
 
         $observer->getEvent()->getLayout()->getUpdate()->addHandle($handle);
+    }
+
+    /**
+     * Collect block cache tags to be attached to HTTP response
+     * @param Varien_Event_Observer $observer
+     */
+    public function blockHtmlAfter(Varien_Event_Observer $observer)
+    {
+        /* @var $block Mage_Core_Block_Abstract */
+        if ($this->_config->blockCacheTagsEnabled()) {
+            $block      = $observer->getBlock();
+            $tagClasses = $this->_config->getBlockCacheClasses();
+            $tags       = array();
+            foreach ($tagClasses as $className) {
+                if ($block instanceof $className) {
+                    $tags = array_merge($tags, $block->getCacheTags());
+                }
+            }
+            $this->_blockCacheTags = array_merge($this->_blockCacheTags, $tags);
+        }
+    }
+
+    /**
+     * If any block cache tags were collected add them to the response
+     * @param Mage_Core_Controller_Response_Http $response
+     */
+    protected function _applBlockCacheTags(Mage_Core_Controller_Response_Http $response)
+    {
+        if (!empty($this->_blockCacheTags)) {
+            $response->setHeader('X-Magento-Cache-Tags', implode(',', array_unique($this->_blockCacheTags)));
+        }
     }
 
     /**

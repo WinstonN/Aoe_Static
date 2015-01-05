@@ -81,6 +81,16 @@
                     </aoestatic_cacheable>
                 </observers>
             </controller_action_layout_load_before>
+
+            <!-- block tag observer -->
+            <core_block_abstract_to_html_after>
+                <observers>
+                    <aoestatic>
+                        <class>aoestatic/observer</class>
+                        <method>blockHtmlAfter</method>
+                    </aoestatic>
+                </observers>
+            </core_block_abstract_to_html_after>
         </events>
     </frontend>
 
