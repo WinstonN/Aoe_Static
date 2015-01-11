@@ -42,4 +42,28 @@ class Aoe_Static_Helper_Data extends Mage_Core_Helper_Abstract
 
         return $this;
     }
+    /**
+     * helper method to ban varnish objects based on a simple match 
+     * of x-magento-cache-tag headers
+     * @param str $varnishNode
+     * @param str $host
+     * @param str $tag
+     * @see Aoe_Static_Model_Observer::_applBlockCacheTags
+     * @return bool
+     */
+    public function banRequest($varnishNode, $host, $tag)
+    {
+        $result = false;
+        $client = new Varien_Http_Client($varnishNode);
+        $client->setMethod('BAN');
+        $client->setHeaders('x-magento-cache-tag-invalidate', $tag);
+        $client->setHeaders('host', $host);
+        try{
+            $response = $client->request();
+            if ($response->isSuccessful()) {
+                $result = true;
+            }
+        } catch (Exception $e) {}
+        return $result;
+    }
 }
