@@ -48,14 +48,15 @@ class Aoe_Static_Helper_Data extends Mage_Core_Helper_Abstract
      * @param str $varnishNode
      * @param str $host
      * @param str $tag
+     * @param str $requestMethod
      * @see Aoe_Static_Model_Observer::_applBlockCacheTags
      * @return bool
      */
-    public function banRequest($varnishNode, $host, $tag)
+    public function banRequestByTag($varnishNode, $host, $tag, $requestMethod = 'BAN')
     {
         $result = false;
         $client = new Varien_Http_Client($varnishNode);
-        $client->setMethod('BAN');
+        $client->setMethod($requestMethod);
         $client->setHeaders('x-magento-cache-tag-invalidate', $tag);
         $client->setHeaders('host', $host);
         try{
@@ -64,6 +65,30 @@ class Aoe_Static_Helper_Data extends Mage_Core_Helper_Abstract
                 $result = true;
             }
         } catch (Exception $e) {}
+        return $result;
+    }
+    /**
+     * ban a given URL in varnish
+     * @param str $varnishNode
+     * @param str $url
+     * @param str $requestMethod
+     * @return boolean
+     */
+    public function banUrl($varnishNode, $url, $requestMethod = 'BAN')
+    {
+        $result   = false;
+        if (filter_var($url, FILTER_VALIDATE_URL) !== false) {
+            $urlParts = parse_url($url);
+            $client   = new Zend_Http_Client(str_replace($urlParts['host'], $varnishNode, $url));
+            $client->setHeaders('host', $urlParts['host']);
+            try {
+                $response = $client->request($requestMethod);
+                if ($response->isSuccessful()) {
+                    $result = true;
+                }
+            } catch (Exception $e) {
+            }
+        }
         return $result;
     }
 }

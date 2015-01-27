@@ -53,6 +53,7 @@
                 <classes>
                     <Mage_Catalog_Block_Product_List/>
                     <Mage_Catalog_Block_Category_View/>
+                    <Mage_Catalog_Block_Product_View/>
                 </classes>
             </block_cache_tags>
         </default>
