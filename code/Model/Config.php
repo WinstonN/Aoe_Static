@@ -110,6 +110,15 @@ class Aoe_Static_Model_Config extends Mage_Core_Model_Config_Base {
     {
         return  !(boolean)$this->getNode('aoe_static/default/block_cache_tags/disabled')->__toString();
     }
+    
+    /**
+     * Check whether or not to send max-age header
+     * @return bool
+     */
+    public function enablePostDispatch()
+    {
+        return Mage::getStoreConfigFlag('web/aoe_static/enable_post_dispatch');
+    }
 
     /**
      * Get list of block classes for which to capture cache tags and send in response

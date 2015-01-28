@@ -115,4 +115,11 @@
             </updates>
         </layout>
     </adminhtml>
+    <default>
+        <web>
+            <aoe_static>
+                <enable_post_dispatch>1</enable_post_dispatch>
+            </aoe_static>
+        </web>
+    </default>
 </config>

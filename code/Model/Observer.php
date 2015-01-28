@@ -48,6 +48,9 @@ class Aoe_Static_Model_Observer
      */
     public function processPostDispatch(Varien_Event_Observer $observer)
     {
+        if (!$this->_config->enablePostDispatch()) {
+            return;
+        }
         // check if we have messages to display
         $this->messagesToShow = $this->checkForMessages();
 
