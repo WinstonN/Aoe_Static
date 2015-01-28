@@ -97,7 +97,7 @@ class Aoe_Static_Model_Observer
 
         $this->_applyRegistryMaxAge($response);
         $this->_applyCustomMaxAgeFromDb($controllerAction->getRequest(), $response);
-        $this->_applBlockCacheTags($response);
+        $this->_applyBlockCacheTags($response);
 
         return $this;
     }
@@ -235,7 +235,7 @@ class Aoe_Static_Model_Observer
      * If any block cache tags were collected add them to the response
      * @param Mage_Core_Controller_Response_Http $response
      */
-    protected function _applBlockCacheTags(Mage_Core_Controller_Response_Http $response)
+    protected function _applyBlockCacheTags(Mage_Core_Controller_Response_Http $response)
     {
         if (!empty($this->_blockCacheTags)) {
             $response->setHeader('X-Magento-Cache-Tags', implode(',', array_unique($this->_blockCacheTags)));
